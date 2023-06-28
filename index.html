@@ -3,38 +3,74 @@
 <head>
     <title>Web GIS dengan Leaflet.js - Peta Sukabumi</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.3.4/leaflet-routing-machine.css" />
     <style>
-        body, html {
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
             margin: 0;
             padding: 0;
-            height: 100%;
             font-family: Arial, sans-serif;
         }
-        
+
+        .navbar {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .navbar h1 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
         #map {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            width: 80%;
-            height: 80%;
+            flex: 1;
+            height: 500px;
+            margin: 20px;
         }
 
         #info-panel {
-            position: absolute;
-            top: 10px;
-            right: 10px;
+            flex: 1;
+            max-width: 400px;
+            margin: 20px;
             padding: 10px;
-            background-color: #fff;
+            background-color: #f9f9f9;
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        #info-panel h3 {
+            margin-top: 0;
+            font-size: 16px;
+        }
+
+        #info-panel p {
+            margin: 5px 0;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
-    <div id="map"></div>
-    <div id="info-panel"></div>
+    <div class="navbar">
+        <h1>Wisata di Sukabumi</h1>
+    </div>
+
+    <div class="container">
+        <div id="map"></div>
+        <div id="info-panel">
+            <h3>Penjelasan Map</h3>
+            <p>Tuliskan penjelasan mengenai peta Sukabumi di sini.</p>
+        </div>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.3.4/leaflet-routing-machine.js"></script>
