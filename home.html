@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Web GIS dengan Leaflet.js - Peta Sukabumi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.3.4/leaflet-routing-machine.css" />
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+        }
+        
+        #map {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 80%;
+        }
+
+        #info-panel {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div id="info-panel"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.3.4/leaflet-routing-machine.js"></script>
+    <script>
+        var map = L.map('map').setView([-6.9263, 106.9286], 12); // Koordinat tengah Sukabumi dan level zoom
+
+        var southWest = L.latLng(-7.0936, 106.6805);
+        var northEast = L.latLng(-6.7392, 107.0319);
+        var bounds = L.latLngBounds(southWest, northEast);
+        map.setMaxBounds(bounds);
+        map.on('drag', function() {
+            map.panInsideBounds(bounds, { animate: false });
+        });
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        var markers = [
+            {
+                name: "Sukabumi",
+                coordinates: [-6.9184, 106.9274],
+                popupText: "<b>Sukabumi</b><br />Ini adalah marker pertama."
+            },
+            {
+                name: "Curug Kembar",
+                coordinates: [-6.9498, 106.7784],
+                popupText: "<b>Sukabumi, Curug Kembar</b><br />Ini adalah marker kedua."
+            },
+            {
+                name: "Curug Sawer",
+                coordinates: [-6.8858054, 106.8611093],
+                popupText: "<b>Sukabumi, Curug Sawer</b><br />Ini adalah marker ketiga."
+            },
+            {
+                name: "Air Terjun Kembar Lembah Purba",
+                coordinates: [-6.8353513, 106.9184863],
+                popupText: "<b>Air Terjun Kembar Lembah Purba</b><br />Ini adalah marker keempat."
+            },
+            {
+                name: "Ryzzy Azzahra Waterpark",
+                coordinates: [-6.8725422, 106.9372156],
+                popupText: "<b>Ryzzy Azzahra Waterpark</b><br />Ini adalah marker kelima."
+            },
+            {
+                name: "Pondok Halimun",
+                coordinates: [-6.8632447, 106.9428697],
+                popupText: "<b>Pondok Halimun</b><br />Ini adalah marker keenam."
+            },
+            {
+                name: "Pantai Cibangban",
+                coordinates: [-6.9635711, 106.42427],
+                popupText: "<b>Pantai Cibangban</b><br />Ini adalah marker ketujuh."
+            }
+        ];
+
+        var userMarker = L.marker(); // Marker untuk posisi pengguna
+        var destinationMarker; // Marker untuk tujuan wisata terpilih
+        var routingControl; // Kontrol routing
+
+        function onLocationFound(e) {
+            var radius = e.accuracy / 2;
+
+            userMarker.setLatLng(e.latlng).addTo(map);
+
+            L.circle(e.latlng, radius).addTo(map);
+        }
+
+        function onLocationError(e) {
+            alert(e.message);
+        }
+
+        map.on('locationfound', onLocationFound);
+        map.on('locationerror', onLocationError);
+
+        map.locate({ setView: true, maxZoom: 16 }); // Mendapatkan posisi pengguna saat ini
+
+        function calculateDistance(destination) {
+            var userLatLng = userMarker.getLatLng();
+            var destinationLatLng = destination.coordinates;
+            var distance = userLatLng.distanceTo(destinationLatLng);
+
+            return distance;
+        }
+
+        function selectDestination(destination) {
+            if (destinationMarker) {
+                map.removeLayer(destinationMarker);
+            }
+
+            if (routingControl) {
+                map.removeControl(routingControl);
+            }
+
+            destinationMarker = L.marker(destination.coordinates).addTo(map);
+            destinationMarker.bindPopup(destination.popupText).openPopup();
+
+            var distance = calculateDistance(destination);
+
+            var infoPanel = document.getElementById('info-panel');
+            infoPanel.innerHTML = `
+                <h3>${destination.name}</h3>
+                <p>${destination.popupText}</p>
+                <p>Jarak dari posisi Anda: ${distance.toFixed(2)} meter</p>
+            `;
+
+            var userLatLng = userMarker.getLatLng();
+            var destinationLatLng = destination.coordinates;
+
+            routingControl = L.Routing.control({
+                waypoints: [
+                    L.latLng(userLatLng.lat, userLatLng.lng),
+                    L.latLng(destinationLatLng[0], destinationLatLng[1])
+                ],
+                routeWhileDragging: true,
+                show: false
+            }).addTo(map);
+        }
+
+        markers.forEach(function(marker) {
+            marker.markerObj = L.marker(marker.coordinates).addTo(map);
+            marker.markerObj.on('click', function() {
+                selectDestination(marker);
+            });
+        });
+    </script>
+</body>
+</html>
