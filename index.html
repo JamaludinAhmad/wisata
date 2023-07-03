@@ -75,7 +75,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.3.4/leaflet-routing-machine.js"></script>
     <script>
-        var map = L.map('map').setView([-6.9263, 106.9286], 12); // Koordinat tengah Sukabumi dan level zoom
+        var map = L.map('map').setView([-6.9263, 106.9286], 10); // Koordinat tengah Sukabumi dan level zoom
 
         var southWest = L.latLng(-7.0936, 106.6805);
         var northEast = L.latLng(-6.7392, 107.0319);
@@ -93,12 +93,12 @@
             {
                 name: "Sukabumi",
                 coordinates: [-6.9184, 106.9274],
-                popupText: "<b>Sukabumi</b><br />Ini adalah marker pertama."
+                popupText: "<b>Sukabumi</b><br />Kota Sukabumi adalah sebuah kota yang berada di provinsi Jawa Barat, Indonesia. Kota ini merupakan enklave dari Kabupaten Sukabumi. Luas wilayah Kota Sukabumi berada di urutan ketiga terkecil di Jawa Barat setelah Kota Cirebon dan Kota Cimahi, yakni 48,33 km²."
             },
             {
                 name: "Curug Kembar",
                 coordinates: [-6.9498, 106.7784],
-                popupText: "<b>Sukabumi, Curug Kembar</b><br />Ini adalah marker kedua."
+                popupText: "<b>Sukabumi, Curug Kembar</b><br />Curug ini berlokasi di kadudampit, Sukabumi."
             },
             {
                 name: "Curug Sawer",
@@ -124,10 +124,59 @@
                 name: "Pantai Cibangban",
                 coordinates: [-6.9635711, 106.42427],
                 popupText: "<b>Pantai Cibangban</b><br />Ini adalah marker ketujuh."
+            },
+            {
+                name: "Curug Bibijilan",
+                coordinates: [-7.0345541, 106.9214554],
+                popupText: "<b>Curug Bibijilan</b><br />Curug ini berlokasi di Sukabumi."
+            },
+            {
+                name: "Curug Cikurutug",
+                coordinates: [-7.1861578, 106.8167419],
+                popupText: "<b>Curug Cikurutug</b><br />Curug ini berlokasi di Sukabumi."
+            },
+            {
+                name: "Pantai Karang Bolong",
+                coordinates: [-7.3492687, 106.535655],
+                popupText: "<b>Pantai Karang Bolong</b><br />Pantai ini berlokasi di Sukabumi."
+            },
+            {
+                name: "Curug Cimarinjung",
+                coordinates: [-7.2253087, 106.4978895],
+                popupText: "<b>Curug Cimarinjung</b><br />Curug ini berlokasi di Sukabumi."
+            },
+            {
+                name: "Pantai Pasar Putih Geopark Ciletuh",
+                coordinates: [-7.1953891, 106.4398995],
+                popupText: "<b>Pantai Pasar Putih Geopark Ciletuh</b><br />Pantai ini berlokasi di Sukabumi."
+            },
+            {
+                name: "Pantai Loji Pelabuhan Ratu",
+                coordinates: [-7.0720684, 106.5415231],
+                popupText: "<b>Pantai Loji Pelabuhan Ratu</b><br />Pantai ini berlokasi di Sukabumi."
+            },
+            {
+                name: "Situ Cipiit",
+                coordinates: [-7.0279442, 106.782879],
+                popupText: "<b>Situ Cipiit</b><br />Situ ini berlokasi di Sukabumi."
+            },
+            {
+                name: "Pantai Ujung Genteng",
+                coordinates: [-7.3787783, 106.3870633],
+                popupText: "<b>Pantai Ujung Genteng</b><br />Pantai ini berlokasi di Sukabumi."
             }
         ];
 
-        var userMarker = L.marker(); // Marker untuk posisi pengguna
+        var userIcon = L.icon({
+            iconUrl: 'userpos.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [0, -41],
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+            shadowSize: [41, 41],
+            shadowAnchor: [12, 41]
+        });
+
         var destinationMarker; // Marker untuk tujuan wisata terpilih
         var routingControl; // Kontrol routing
 
@@ -169,7 +218,7 @@
             destinationMarker.bindPopup(destination.popupText).openPopup();
 
             var distance = calculateDistance(destination);
-
+            
             var infoPanel = document.getElementById('info-panel');
             infoPanel.innerHTML = `
                 <h3>${destination.name}</h3>
@@ -189,6 +238,7 @@
                 show: false
             }).addTo(map);
         }
+        var userMarker = L.marker([], { icon: userIcon }); // Marker untuk posisi pengguna
 
         markers.forEach(function(marker) {
             marker.markerObj = L.marker(marker.coordinates).addTo(map);
